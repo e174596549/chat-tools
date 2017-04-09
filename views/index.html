@@ -17,9 +17,10 @@
                     {{ item.message }}
                 </li>
             </ul>
+            <!-- <div class="show-textarea" v-bind:html="html" v-on:input="show-update"></div> -->
             <el-button v-on:click="login" v-bind:disabled="isLogin">登录</el-button>
             <el-button v-on:click="send" icon="message">发送</el-button>
-            <textarea class="my-textarea" v-bind:value="input" v-on:input="update"></textarea>
+            <textarea class="my-textarea" v-model="input"></textarea>
         </div>
         <script type="text/javascript">
             /*button.onclick = function () {
@@ -37,7 +38,8 @@
                     input: '',
                     items: [],
                     isLogin: false,
-                    userList: []
+                    userList: [],
+                    text: ''
                 },
                 methods: {
                     login: function () {
@@ -95,13 +97,10 @@
                         console.log('message:', `${this.input}`);
                         $.socket.emit('message', `${this.input}`)
                         $.showMessage(`${this.input}`)
-                    },
-                    update: function (e) {
-                        this.input = e.target.value
+                        this.input = ''
                     },
                     showMessage: function (msg) {
                         $.items.push({message: msg})
-                        this.input = ''
                     }
                 }
             })
