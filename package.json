@@ -1,0 +1,26 @@
+{
+  "name": "chat-tools",
+  "version": "1.0.0",
+  "description": "聊天工具",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/e174596549/chat-tools.git"
+  },
+  "keywords": [
+    "chat-tools"
+  ],
+  "author": "leo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/e174596549/chat-tools/issues"
+  },
+  "homepage": "https://github.com/e174596549/chat-tools#readme",
+  "dependencies": {
+    "express": "^4.15.2",
+    "socket.io": "^1.7.3"
+  }
+}
