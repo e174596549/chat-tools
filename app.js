@@ -38,7 +38,9 @@ io.on('connection', function(socket) {
     });
     socket.on('message', function(data) {
         console.log(data);
-        socket.broadcast.emit('message', `${socket.name}: ${data}`)
+        var time = new Date().toLocaleString()
+        // socket.emit('message', new Date(), socket.name, data)
+        io.sockets.emit('message', time, socket.name, data)
     });
 
 });

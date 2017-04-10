@@ -12,25 +12,25 @@
     </head>
     <body>
         <div class="my-div" id="editor">
-            <ul>
-                <li v-for="item in items">
-                    {{ item.message }}
-                </li>
-            </ul>
+            <el-row :gutter="1" v-for="item in items">
+                <el-col>
+                    <div class="grid-content bg-purple center">
+                        {{ item.message.time }}
+                    </div>
+                    <div class="grid-content bg-purple center">
+                        {{ item.message.name }}
+                    </div>
+                    <div class="grid-content bg-purple center">
+                        {{ item.message.data }}
+                    </div>
+                </el-col>
+            </el-row>
             <!-- <div class="show-textarea" v-bind:html="html" v-on:input="show-update"></div> -->
             <el-button v-on:click="login" v-bind:disabled="isLogin">登录</el-button>
             <el-button v-on:click="send" icon="message">发送</el-button>
             <textarea class="my-textarea" v-model="input"></textarea>
         </div>
         <script type="text/javascript">
-            /*button.onclick = function () {
-                var content = document.getElementById('input').value
-                socket.emit('input', content); //发送一个名为foo的事件，并且传递一个字符串数据‘hello’
-            }
-            socket.on('broadcast', function (data) {
-                console.log('new messages:', data);
-            });
-            */
             var $ = new Vue({
                 el: '#editor',
                 data: {
@@ -50,22 +50,29 @@
                             $.isLogin = true
                             $.name()
                             $.socket.on('system', function (userName, userList, type) {
+                                var msg = {
+                                    name:userName,
+                                    time:new Date().toLocaleString(),
+                                    data:''
+                                }
                                 if (type === 'login') {
+                                    msg.data = '进入聊天室'
                                     $.items.push({
-                                        message: '欢迎 ' + userName + ' 登录聊天室'
+                                        message: msg
                                     })
                                 }
                                 if (type === 'logout') {
+                                    msg.data = '已经退出了聊天室'
                                     $.items.push({
-                                        message: userName + ' 已经退出聊天室'
+                                        message: msg
                                     })
                                 }
                                 $.userList = userList
                                 $.showUserList()
                             })
-                            $.socket.on('message', function (data) {
-                                console.log('收到：', data);
-                                $.showMessage(data)
+                            $.socket.on('message', function (time, name, data) {
+                                console.log('收到：', time, name, data);
+                                $.showMessage(time, name, data)
                             })
                         });
                     },
@@ -87,20 +94,31 @@
                         });
                     },
                     showUserList: function () {
-                        let user = '当前在线:'
+                        let name = ''
                         for (var i = 0; i < $.userList.length; i++) {
-                            user += ` [${$.userList[i]}]`
+                            name += ` [${$.userList[i]}]`
                         }
-                        $.items.push({message: user})
+                        var msg = {
+                            name:name,
+                            time:new Date().toLocaleString(),
+                            data:'现在在线'
+                        }
+                        $.items.push({
+                            message: msg
+                        })
                     },
                     send: function () {
                         console.log('message:', `${this.input}`);
                         $.socket.emit('message', `${this.input}`)
-                        $.showMessage(`${this.input}`)
                         this.input = ''
                     },
-                    showMessage: function (msg) {
-                        $.items.push({message: msg})
+                    showMessage: function (time, name, data) {
+                        var msg = {
+                            time: time,
+                            name: name,
+                            data: data
+                        }
+                        $.items.push({message:msg})
                     }
                 }
             })
