@@ -12,7 +12,8 @@
     </head>
     <body>
         <div class="my-div" id="editor">
-            <el-row :gutter="1" v-for="item in items">
+              <transition-group name="list" tag="p">
+            <el-row :gutter="1" v-for="item in items" v-bind:key="item">
                 <el-col>
                     <div class="grid-content bg-purple center">
                         {{ item.message.time }}
@@ -21,10 +22,14 @@
                         {{ item.message.name }}
                     </div>
                     <div class="grid-content bg-purple center">
+                        :
+                    </div>
+                    <div class="grid-content bg-purple center">
                         {{ item.message.data }}
                     </div>
                 </el-col>
             </el-row>
+              </transition-group>
             <!-- <div class="show-textarea" v-bind:html="html" v-on:input="show-update"></div> -->
             <el-button v-on:click="login" v-bind:disabled="isLogin">登录</el-button>
             <el-button v-on:click="send" icon="message">发送</el-button>
