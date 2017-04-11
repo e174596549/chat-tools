@@ -39,46 +39,58 @@ code {
     right: 0;
 }
 
-  .el-row {
+.el-row {
     margin-bottom: 2px;
     &:last-child {
-      margin-bottom: 0;
+        margin-bottom: 0;
     }
-  }
-  .el-col {
+}
+
+.el-col {
     border-radius: 4px;
     display: flex;
     align-items: center;
-  }
-  .bg-purple-dark {
+}
+
+.bg-purple-dark {
     background: #99a9bf;
-  }
-  .bg-purple {
+}
+
+.bg-purple {
     background: #d3dce6;
-  }
-  .bg-purple-light {
+}
+
+.bg-purple-light {
     background: #e5e9f2;
-  }
-  .grid-content {
+}
+
+.grid-content {
     border-radius: 4px;
     min-height: 36px;
-  }
-  .row-bg {
+}
+
+.row-bg {
     padding: 10px 0;
     background-color: #f9fafc;
-  }
-  .center {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding:0 10px;
-      margin: 0 2px;
-  }
+}
 
-  .list-enter-active, .list-leave-active {
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px;
+    margin: 0 2px;
+}
+
+.list-enter-active, .list-leave-active {
     transition: all 1s;
-  }
-  .list-enter, .list-leave-active {
+}
+
+.list-enter, .list-leave-active {
     opacity: 0;
     transform: translateY(30px);
-  }
+}
+
+.top {}
+
+.bottom {}

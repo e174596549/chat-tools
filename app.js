@@ -23,24 +23,27 @@ io = require('socket.io').listen(server); //引入socket.io模块并绑定到服
 var nameList = []
 io.on('connection', function(socket) {
     console.log('a user connected');
-    socket.on('disconnect', function(){
+    socket.on('disconnect', function() {
         console.log('user disconnected');
         nameList.splice(nameList.indexOf(socket.name), 1);
         socket.broadcast.emit('system', socket.name, nameList, 'logout');
     });
-    socket.on('name', function(data){
+    socket.on('name', function(data) {
+        var userName = data || '匿名'
         console.log(data);
-        nameList.push(data)
-        socket.name = data
-        console.log('socket.name:', data);
+        nameList.push(userName)
+        socket.name = userName
+        console.log('socket.name:', userName);
         socket.emit('loginSuccess', nameList);
-        io.sockets.emit('system', data, nameList, 'login');
+        io.sockets.emit('system', userName, nameList, 'login');
     });
     socket.on('message', function(data) {
-        console.log(data);
-        var time = new Date().toLocaleString()
-        // socket.emit('message', new Date(), socket.name, data)
-        io.sockets.emit('message', time, socket.name, data)
+        if (data !== '') {
+            console.log('message data:', data);
+            var time = new Date().toLocaleString()
+            // socket.emit('message', new Date(), socket.name, data)
+            io.sockets.emit('message', time, socket.name, data)
+        }
     });
 
 });
