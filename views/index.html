@@ -36,7 +36,7 @@
         </div>
         <!-- <div class="show-textarea" v-bind:html="html" v-on:input="show-update"></div> -->
         <div class="bottom">
-            <el-button v-on:click="login" v-bind:disabled="isLogin">登录</el-button>
+            <el-button v-on:click="name" v-bind:disabled="isLogin">登录</el-button>
             <el-button v-on:click="send" icon="message" v-bind:disabled="!isLogin">发送</el-button>
             <textarea class="my-textarea" v-model="input"></textarea>
         </div>
@@ -60,7 +60,6 @@
                     $.socket.on('connect', function() {
                         console.log('已建立好连接');
                         $.isLogin = true
-                        $.name()
                         $.socket.on('system', function(userName, userList, type) {
                             var msg = {
                                 name: userName,
@@ -95,14 +94,17 @@
                     }).then(({
                         value
                     }) => {
-                        $.socket.emit('name', value)
-                        $.socket.on('loginSuccess', function(data) {
-                            console.log('isLogin', data);
-                            $.$message({
-                                type: 'success',
-                                message: '登录成功 你的名字是: ' + value
-                            });
-                        })
+                        if (value) {
+                            $.login()
+                            $.socket.emit('name', value)
+                            $.socket.on('loginSuccess', function(data) {
+                                console.log('isLogin', data);
+                                $.$message({
+                                    type: 'success',
+                                    message: '登录成功 你的名字是: ' + value
+                                });
+                            })
+                        }
                     }).catch(() => {
                         this.$message({
                             type: 'info',
