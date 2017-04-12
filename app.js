@@ -18,6 +18,17 @@ var server = app.listen(9000, function() {
     console.log("应用实例，访问地址为 http://%s:%s", host, port)
 })
 
+var redis = require('redis');
+var redisclient = redis.createClient();
+
+var sub = function(c) {
+    var c = c || 'chatchannel';
+    redisclient.subscribe(c, function(e) {
+        console.log('subscribe channel : ' + c);
+    });
+}
+sub();
+
 io = require('socket.io').listen(server); //引入socket.io模块并绑定到服务器
 //socket部分
 var nameList = []
@@ -45,5 +56,10 @@ io.on('connection', function(socket) {
             io.sockets.emit('message', time, socket.name, data)
         }
     });
-
+    redisclient.on('message', function(error, msg) {
+        console.log('connection');
+        console.log(msg);
+        var time = new Date().toLocaleString()
+        socket.emit('message', time, '系统广播', msg);
+    });
 });
