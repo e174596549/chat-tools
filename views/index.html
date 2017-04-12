@@ -1,149 +1,152 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <meta charset="utf-8">
-    <title></title>
-    <link rel="stylesheet" href="https://unpkg.com/element-ui@next/lib/theme-default/index.css">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-    <style></style>
-</head>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <link rel="stylesheet" href="https://unpkg.com/element-ui@next/lib/theme-default/index.css">
+        <link rel="stylesheet" href="css/style.css">
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="https://unpkg.com/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+        <style></style>
+    </head>
 
-<body>
-    <div class="my-div" id="editor">
-        <div class="top">
-            <transition-group name="list" tag="p">
-                <el-row :gutter="1" v-for="item in items" v-bind:key="item">
-                    <el-col>
-                        <div class="grid-content bg-purple center">
-                            {{ item.message.time }}
-                        </div>
-                        <div class="grid-content bg-purple center">
-                            {{ item.message.name }}
-                        </div>
-                        <div class="grid-content bg-purple center">
-                            :
-                        </div>
-                        <div class="grid-content bg-purple center">
-                            {{ item.message.data }}
-                        </div>
-                    </el-col>
-                </el-row>
-            </transition-group>
-        </div>
-        <!-- <div class="show-textarea" v-bind:html="html" v-on:input="show-update"></div> -->
-        <div class="bottom">
-            <el-button v-on:click="name" v-bind:disabled="isLogin">登录</el-button>
-            <el-button v-on:click="send" icon="message" v-bind:disabled="!isLogin">发送</el-button>
-            <textarea class="my-textarea" v-model="input"></textarea>
-        </div>
+    <body>
+        <div class="my-div" id="editor">
+            <div class="top">
+                <transition-group name="list" tag="p">
+                    <el-row :gutter="1" v-for="item in items" v-bind:key="item">
+                        <el-col>
+                            <div class="grid-content bg-purple center">
+                                {{ item.message.time }}
+                            </div>
+                            <div class="grid-content bg-purple center">
+                                {{ item.message.name }}
+                            </div>
+                            <div class="grid-content bg-purple center">
+                                :
+                            </div>
+                            <div class="grid-content bg-purple center">
+                                {{ item.message.data }}
+                            </div>
+                        </el-col>
+                    </el-row>
+                </transition-group>
+            </div>
+            <!-- <div class="show-textarea" v-bind:html="html" v-on:input="show-update"></div> -->
+            <div class="bottom">
+                <el-button v-on:click="name" v-bind:disabled="isLogin">登录</el-button>
+                <el-button v-on:click="send" icon="message" v-bind:disabled="!isLogin">发送</el-button>
+                <textarea class="my-textarea" v-model="input"></textarea>
+            </div>
 
-    </div>
-    <script type="text/javascript">
-        var $ = new Vue({
-            el: '#editor',
-            data: {
-                socket: null,
-                input: '',
-                items: [],
-                isLogin: false,
-                userList: [],
-                text: ''
-            },
-            methods: {
-                login: function() {
-                    $.socket = io.connect()
-                    console.log('created');
-                    $.socket.on('connect', function() {
-                        console.log('已建立好连接');
-                        $.isLogin = true
-                        $.socket.on('system', function(userName, userList, type) {
-                            var msg = {
-                                name: userName,
-                                time: new Date().toLocaleString(),
-                                data: ''
-                            }
-                            if (type === 'login') {
-                                msg.data = '进入聊天室'
-                                $.items.push({
-                                    message: msg
-                                })
-                            }
-                            if (type === 'logout') {
-                                msg.data = '已经退出了聊天室'
-                                $.items.push({
-                                    message: msg
-                                })
-                            }
-                            $.userList = userList
-                            $.showUserList()
-                        })
-                        $.socket.on('message', function(time, name, data) {
-                            console.log('收到：', time, name, data);
-                            $.showMessage(time, name, data)
-                        })
-                    });
+        </div>
+        <script type="text/javascript">
+            var $ = new Vue({
+                el: '#editor',
+                data: {
+                    socket: null,
+                    input: '',
+                    items: [],
+                    isLogin: false,
+                    userList: [],
+                    text: '',
+                    fullscreenLoading: true
                 },
-                name: function() {
-                    this.$prompt('请输您的名字', '提示', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消'
-                    }).then(({
-                        value
-                    }) => {
-                        if (value) {
-                            $.login()
-                            $.socket.emit('name', value)
-                            $.socket.on('loginSuccess', function(data) {
-                                console.log('isLogin', data);
-                                $.$message({
-                                    type: 'success',
-                                    message: '登录成功 你的名字是: ' + value
-                                });
+                methods: {
+                    login: function () {
+                        $.socket = io.connect()
+                        console.log('created');
+                        $.socket.on('connect', function () {
+                            console.log('已建立好连接');
+                            $.isLogin = true
+                            $.socket.on('system', function (userName, userList, type) {
+                                var msg = {
+                                    name: userName,
+                                    time: new Date().toLocaleString(),
+                                    data: ''
+                                }
+                                if (type === 'login') {
+                                    $.$notify({
+                                        title: '新朋友进入',
+                                        message: ('p', {
+                                            style: 'color: red'
+                                        }, `${userName} 进入了聊天室`)
+                                    });
+                                    // msg.data = '进入聊天室' $.items.push({message: msg})
+                                }
+                                if (type === 'logout') {
+                                    $.$notify({
+                                        title: '朋友离开',
+                                        message: ('p', {
+                                            style: 'color: red'
+                                        }, `${userName} 离开了聊天室`)
+                                    });
+                                }
+                                $.userList = userList
+                                $.showUserList()
                             })
-                        }
-                    }).catch(() => {
-                        this.$message({
-                            type: 'info',
-                            message: '取消输入'
+                            $.socket.on('message', function (time, name, data) {
+                                console.log('收到：', time, name, data);
+                                $.showMessage(time, name, data)
+                            })
+                            $.socket.on('disconnect', function () {
+                                console.log('user disconnected');
+                                $.name()
+                                // nameList.splice(nameList.indexOf(socket.name), 1); socket.broadcast.emit('system', socket.name, nameList, 'logout');
+                            });
                         });
-                    });
-                },
-                showUserList: function() {
-                    let name = ''
-                    for (var i = 0; i < $.userList.length; i++) {
-                        name += ` [${$.userList[i]}]`
+                    },
+                    name: function () {
+                        this.$prompt('请输您的名字', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消'
+                        }).then(({value}) => {
+                            if (value) {
+                                $.login()
+                                $.socket.emit('name', value)
+                                //提示等待登录
+                                $.socket.on('loginSuccess', function (data) {
+                                    console.log('isLogin', data);
+                                    $.$message({
+                                        type: 'success',
+                                        message: '登录成功 你的名字是: ' + value
+                                    });
+                                })
+                            }
+                        }).catch(() => {
+                            this.$message({type: 'info', message: '取消输入'});
+                        });
+                    },
+                    showUserList: function () {
+                        let name = ''
+                        for (var i = 0; i < $.userList.length; i++) {
+                            name += ` [${$.userList[i]}]`
+                        }
+                        var msg = {
+                            name: name,
+                            time: new Date().toLocaleString(),
+                            data: '现在在线'
+                        }
+                        this.$message(`在线朋友：${msg.name}`);
+                    },
+                    send: function () {
+                        console.log('message:', `${this.input}`);
+                        $.socket.emit('message', `${this.input}`)
+                        this.input = ''
+                    },
+                    showMessage: function (time, name, data) {
+                        var msg = {
+                            time: time,
+                            name: name,
+                            data: data
+                        }
+                        $.items.push({message: msg})
                     }
-                    var msg = {
-                        name: name,
-                        time: new Date().toLocaleString(),
-                        data: '现在在线'
-                    }
-                    $.items.push({
-                        message: msg
-                    })
-                },
-                send: function() {
-                    console.log('message:', `${this.input}`);
-                    $.socket.emit('message', `${this.input}`)
-                    this.input = ''
-                },
-                showMessage: function(time, name, data) {
-                    var msg = {
-                        time: time,
-                        name: name,
-                        data: data
-                    }
-                    $.items.push({
-                        message: msg
-                    })
                 }
-            }
-        })
-    </script>
-</body>
+            })
+        </script>
+    </body>
 
 </html>
