@@ -12,13 +12,15 @@ html, body, #editor {
     vertical-align: top;
     box-sizing: border-box;
     padding: 0 20px;
-    border: none;
+    border: 1px solid #C0CCDA;
+    border-radius: 4px;
     resize: none;
     outline: none;
     background-color: #f6f6f6;
     font-size: 14px;
     font-family: 'Monaco', courier, monospace;
     padding: 20px;
+    margin: 2px;
 }
 
 .my-div {
@@ -94,3 +96,7 @@ code {
 .top {}
 
 .bottom {}
+
+.active {
+    justify-content: flex-end;
+}
