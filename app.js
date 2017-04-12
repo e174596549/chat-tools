@@ -60,6 +60,6 @@ io.on('connection', function(socket) {
         console.log('connection');
         console.log(msg);
         var time = new Date().toLocaleString()
-        socket.emit('message', time, '系统广播', msg);
+        socket.emit('systemBroadcast', msg);
     });
 });

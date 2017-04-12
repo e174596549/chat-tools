@@ -96,6 +96,9 @@
                                 $.name()
                                 // nameList.splice(nameList.indexOf(socket.name), 1); socket.broadcast.emit('system', socket.name, nameList, 'logout');
                             });
+                            $.socket.on('systemBroadcast', function (data) {
+                                $.$message({showClose: true, duration: 0, type: 'warning', message: data});
+                            });
                         });
                     },
                     name: function () {
