@@ -98,8 +98,8 @@
                         })
                         $.socket.on('disconnect', function () {
                             console.log('user disconnected');
-                            $.isLogin = false
-                            $.name()
+                            $.isLogin = false $.name()
+                            location.reload()
                             // nameList.splice(nameList.indexOf(socket.name), 1); socket.broadcast.emit('system', socket.name, nameList, 'logout');
                         });
                         $.socket.on('systemBroadcast', function (data) {

@@ -40,6 +40,7 @@ io.on('connection', function(socket) {
         console.log('user disconnected');
         nameList.splice(nameList.indexOf(socket.name), 1);
         socket.broadcast.emit('system', socket.name, nameList, 'logout');
+        socket.disconnect()
     });
     // 新用户登录时 记录名字并广播给其他用户
     socket.on('name', function(data) {
