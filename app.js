@@ -51,6 +51,16 @@ io.on('connection', function(socket) {
         socket.emit('loginSuccess', nameList);
         io.sockets.emit('system', userName, nameList, 'login');
     });
+    socket.on('logOut', function(data) {
+        // var userName = data || '匿名'
+        // console.log(data);
+        // nameList.push(userName)
+        // socket.name = userName
+        // console.log('socket.name:', userName);
+        // socket.emit('loginSuccess', nameList);
+        // io.sockets.emit('system', userName, nameList, 'login');
+        socket.disconnect()
+    });
     // 聊天消息
     socket.on('message', function(data) {
         if (data !== '') {
