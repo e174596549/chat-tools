@@ -3,6 +3,7 @@
 
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <title></title>
         <link rel="stylesheet" href="https://unpkg.com/element-ui@next/lib/theme-default/index.css">
         <link rel="stylesheet" href="css/style.css">
@@ -137,7 +138,7 @@
                             data: '现在在线'
                         }
                         setTimeout(() => {
-                            this.$message(`当前在线：${msg.name}`);
+                            this.$message({showClose: true, duration: 0, type: 'info', message: `当前在线： ${name}`});
                         }, 2000)
                     },
                     send: function () {
