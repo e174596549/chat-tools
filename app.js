@@ -39,11 +39,11 @@ io.on('connection', function(socket) {
     // socket 断开时发送下线消息
     socket.on('disconnect', function() {
         console.log('user disconnected');
-        // if (socket.name) {
+        if (socket.name) {
             nameList.splice(nameList.indexOf(socket.name), 1);
             socket.broadcast.emit('system', socket.name, nameList, 'logout');
             socket.disconnect()
-        // }
+        }
     });
     // 新用户登录时 记录名字并广播给其他用户
     socket.on('name', function(data) {
