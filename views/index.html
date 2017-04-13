@@ -60,57 +60,67 @@
                 },
                 methods: {
                     login: function () {
-                        $.socket = io.connect({'reconnect': false, 'auto connect': false})
-                        console.log('created');
-                        $.socket.on('connect', function () {
-                            console.log('已建立好连接');
-                            $.socket.on('whoYouAre', function () {
-                                $.name()
+                        if ($.socket) {
+                            $.name()
+                        } else {
+                            $.socket = io.connect({'reconnect': false, 'auto connect': false})
+                            console.log('created');
+                            $.socket.on('connect', function () {
+                                console.log('已建立好连接');
+                                $.socket.on('whoYouAre', function () {
+                                    if ($.myName === '') {
+                                        $.name()
+                                    } else {
+                                        $.socket.emit('name', value)
+                                    }
+                                })
+                            });
+                            $.socket.on('system', function (userName, userList, type) {
+                                var msg = {
+                                    name: userName,
+                                    time: new Date().toLocaleString(),
+                                    data: ''
+                                }
+                                if (type === 'login') {
+                                    $.$notify({
+                                        title: '新朋友进入',
+                                        message: ('p', {
+                                            style: 'color: red'
+                                        }, `${userName} 进入了聊天室`)
+                                    });
+                                    // msg.data = '进入聊天室' $.items.push({message: msg})
+                                }
+                                if (type === 'logout') {
+                                    $.$notify({
+                                        title: '朋友离开',
+                                        message: ('p', {
+                                            style: 'color: red'
+                                        }, `${userName} 离开了聊天室`)
+                                    });
+                                }
+                                $.userList = userList
+                                $.showUserList()
                             })
-                        });
-                        $.socket.on('system', function (userName, userList, type) {
-                            var msg = {
-                                name: userName,
-                                time: new Date().toLocaleString(),
-                                data: ''
-                            }
-                            if (type === 'login') {
-                                $.$notify({
-                                    title: '新朋友进入',
-                                    message: ('p', {
-                                        style: 'color: red'
-                                    }, `${userName} 进入了聊天室`)
-                                });
-                                // msg.data = '进入聊天室' $.items.push({message: msg})
-                            }
-                            if (type === 'logout') {
-                                $.$notify({
-                                    title: '朋友离开',
-                                    message: ('p', {
-                                        style: 'color: red'
-                                    }, `${userName} 离开了聊天室`)
-                                });
-                            }
-                            $.userList = userList
-                            $.showUserList()
-                        })
-                        $.socket.on('message', function (time, name, data) {
-                            console.log('收到：', time, name, data);
-                            $.showMessage(time, name, data)
-                        })
-                        $.socket.on('disconnect', function () {
-                            console.log('user disconnected');
-                            $.isLogin = false
-                            // $.isLogin = false $.name() nameList.splice(nameList.indexOf(socket.name), 1); socket.broadcast.emit('system', socket.name, nameList, 'logout');
-                        });
-                        $.socket.on('systemBroadcast', function (data) {
-                            $.$message({showClose: true, duration: 0, type: 'warning', message: data});
-                        });
+                            $.socket.on('message', function (time, name, data) {
+                                console.log('收到：', time, name, data);
+                                $.showMessage(time, name, data)
+                            })
+                            $.socket.on('disconnect', function () {
+                                console.log('user disconnected');
+                                $.isLogin = false
+                                // $.isLogin = false $.name() nameList.splice(nameList.indexOf(socket.name), 1); socket.broadcast.emit('system', socket.name, nameList, 'logout');
+                            });
+                            $.socket.on('systemBroadcast', function (data) {
+                                $.$message({showClose: true, duration: 0, type: 'warning', message: data});
+                            });
+                        }
                     },
                     name: function () {
+                        $.isLogin = false
                         this.$prompt('请输您的名字', '提示', {
                             confirmButtonText: '确定',
-                            cancelButtonText: '取消'
+                            cancelButtonText: '取消',
+                            // closeOnPressEscape: false, closeOnClickModal: false
                         }).then(({value}) => {
                             if (value) {
                                 //$.login()
