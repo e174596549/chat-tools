@@ -60,6 +60,7 @@
                 },
                 methods: {
                     login: function () {
+                        //console.log('$.socket:', $.socket);
                         if ($.socket) {
                             $.name()
                         } else {
@@ -67,14 +68,15 @@
                             console.log('created');
                             $.socket.on('connect', function () {
                                 console.log('已建立好连接');
-                                $.socket.on('whoYouAre', function () {
+                            });
+                            $.socket.on('whoYouAre', function () {
+				//$.socket.emit('message', $.myName)
                                     if ($.myName === '') {
                                         $.name()
                                     } else {
-                                        $.socket.emit('name', value)
+                                        $.socket.emit('name', $.myName)
                                     }
                                 })
-                            });
                             $.socket.on('system', function (userName, userList, type) {
                                 var msg = {
                                     name: userName,
@@ -113,6 +115,14 @@
                             $.socket.on('systemBroadcast', function (data) {
                                 $.$message({showClose: true, duration: 0, type: 'warning', message: data});
                             });
+                                $.socket.on('loginSuccess', function (data) {
+                                    console.log('isLogin', data);
+                                    $.$message({
+                                        type: 'success',
+                                        message: '你的名字： ' + $.myName
+                                    });
+                                    $.isLogin = true
+                                })
                         }
                     },
                     name: function () {
@@ -124,17 +134,9 @@
                         }).then(({value}) => {
                             if (value) {
                                 //$.login()
+                                $.myName = value
                                 $.socket.emit('name', value)
                                 //提示等待登录
-                                $.socket.on('loginSuccess', function (data) {
-                                    console.log('isLogin', data);
-                                    $.$message({
-                                        type: 'success',
-                                        message: '登录成功 你的名字是: ' + value
-                                    });
-                                    $.myName = value
-                                    $.isLogin = true
-                                })
                             }
                         }).catch(() => {
                             this.$message({type: 'info', message: '取消输入'});
@@ -178,6 +180,7 @@
                     },
                     logOut: function () {
                         $.socket.emit('logOut', `${$.myName}`)
+            $.socket = null
                     }
                 }
             })
