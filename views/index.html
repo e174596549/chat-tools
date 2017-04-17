@@ -53,7 +53,7 @@
                 <el-button v-on:click="logOut" v-bind:disabled="!isLogin">登出</el-button>
                 <el-button v-on:click="clear" icon="delete">清空聊天记录</el-button>
                 <el-button v-on:click="send" icon="message" v-bind:disabled="!isLogin">发送</el-button>
-                <textarea class="my-textarea" v-model="input"></textarea>
+                <input class="my-textarea" v-model="input" v-on:change='send'></input>
             </div>
 
         </div>
