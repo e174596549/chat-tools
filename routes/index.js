@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const server = require('../controllers/server_controller');
+//const server = require('../controllers/server_controller');
 // const game = require('../controllers/game_controller');
 // const rank = require('../controllers/rank_controller');
 // const point = require('../controllers/point_controller');

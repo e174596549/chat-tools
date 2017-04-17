@@ -10,12 +10,24 @@
         <script src="/socket.io/socket.io.js"></script>
         <script src="https://unpkg.com/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-        <style></style>
+        <style type="text/css">
+            div {
+                border-radius: 5px;
+                border: 1px solidred;
+                padding: 0 10px;
+            }
+            #test {
+                min-height: 70%;
+                overflow-y: auto;
+                max-height: 70%;
+            }
+
+        </style>
     </head>
 
     <body>
         <div class="my-div" id="editor">
-            <div class="top">
+            <div id='test' class="top">
                 <transition-group name="list" tag="p">
                     <el-row :gutter="1" v-for="item in items" v-bind:key="item">
                         <el-col v-bind:class="{ active: item.message.isMine }">
@@ -70,13 +82,13 @@
                                 console.log('已建立好连接');
                             });
                             $.socket.on('whoYouAre', function () {
-				//$.socket.emit('message', $.myName)
-                                    if ($.myName === '') {
-                                        $.name()
-                                    } else {
-                                        $.socket.emit('name', $.myName)
-                                    }
-                                })
+                                //$.socket.emit('message', $.myName)
+                                if ($.myName === '') {
+                                    $.name()
+                                } else {
+                                    $.socket.emit('name', $.myName)
+                                }
+                            })
                             $.socket.on('system', function (userName, userList, type) {
                                 var msg = {
                                     name: userName,
@@ -115,14 +127,14 @@
                             $.socket.on('systemBroadcast', function (data) {
                                 $.$message({showClose: true, duration: 0, type: 'warning', message: data});
                             });
-                                $.socket.on('loginSuccess', function (data) {
-                                    console.log('isLogin', data);
-                                    $.$message({
-                                        type: 'success',
-                                        message: '你的名字： ' + $.myName
-                                    });
-                                    $.isLogin = true
-                                })
+                            $.socket.on('loginSuccess', function (data) {
+                                console.log('isLogin', data);
+                                $.$message({
+                                    type: 'success',
+                                    message: '你的名字： ' + $.myName
+                                });
+                                $.isLogin = true
+                            })
                         }
                     },
                     name: function () {
@@ -180,7 +192,15 @@
                     },
                     logOut: function () {
                         $.socket.emit('logOut', `${$.myName}`)
-            $.socket = null
+                        $.socket = null
+                    }
+                },
+                watch: {
+                    items: function (val, oldVal) {
+                        var element = document.getElementById('test')
+                        setTimeout(() => {
+                            element.scrollTop = 100000000000
+                        }, 0)
                     }
                 }
             })
