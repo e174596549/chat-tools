@@ -60,9 +60,6 @@
                 <el-upload action="/img" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-success="handleAvatarSuccess">
                     <i class="el-icon-plus"></i>
                 </el-upload>
-                <el-dialog v-model="dialogVisible" size="tiny">
-                    <img width="100%" :src="dialogImageUrl" alt="">
-                </el-dialog>
             </div>
         </div>
         <script type="text/javascript">
@@ -203,10 +200,48 @@
                         $.socket = null
                     },
                     handleAvatarSuccess: function (response, file, fileList) {
-                        this.input = `<img src='${file.url}'>`
+                        var blobUrl = file.url;
+
+                        var xhr = new XMLHttpRequest;
+                        xhr.responseType = 'blob';
+
+                        xhr.onload = function () {
+                            var recoveredBlob = xhr.response;
+                            var reader = new FileReader;
+                            reader.onload = function () {
+                                var blobAsDataUrl = reader.result;
+                                console.log(blobAsDataUrl);
+                                //window.location = blobAsDataUrl;
+                                $.input = `<img src='${blobAsDataUrl}'>`
+                            };
+                            reader.readAsDataURL(recoveredBlob);
+                            //console.log('reader:', reader);
+                        };
+                        // xhr.onreadystatechange = function () {     if (xhr.readyState === 4) {         console.log(xhr.response);         //Outputs a DOMString by default var data = stringToArrayBuffer(xhr.response); console.log(data);     } }
+                        xhr.open('GET', blobUrl)
+                        xhr.send()
                     },
                     handlePictureCardPreview: function (file) {
-                        this.input = `<img src='${file.url}'>`
+                        var blobUrl = file.url;
+
+                        var xhr = new XMLHttpRequest;
+                        xhr.responseType = 'blob';
+
+                        xhr.onload = function () {
+                            var recoveredBlob = xhr.response;
+                            var reader = new FileReader;
+                            reader.onload = function () {
+                                var blobAsDataUrl = reader.result;
+                                console.log(blobAsDataUrl);
+                                //window.location = blobAsDataUrl;
+                                $.input = `<img src='${blobAsDataUrl}'>`
+                            };
+                            reader.readAsDataURL(recoveredBlob);
+                            //console.log('reader:', reader);
+                        };
+                        // xhr.onreadystatechange = function () {     if (xhr.readyState === 4) {         console.log(xhr.response);         //Outputs a DOMString by default var data = stringToArrayBuffer(xhr.response); console.log(data);     } }
+                        xhr.open('GET', blobUrl)
+                        xhr.send()
                     }
                 },
                 watch: {
