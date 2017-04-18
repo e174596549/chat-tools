@@ -2,7 +2,7 @@
 
 [聊天室地址](http://taoer.info:9000)
 
-![](https://raw.githubusercontent.com/e174596549/chat-tools/master/QQ20170412-140958.png)
+![](https://raw.githubusercontent.com/e174596549/chat-tools/master/chat.gif)
 
 - 后端代码基于 node.js 
 - 使用 socket.io 实现 websocket 完成长连接通信
