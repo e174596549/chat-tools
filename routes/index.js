@@ -28,7 +28,10 @@ router.get('/', function(req, res, next) {
     var path = 'index.html'
     sendHtml(path, res)
 });
-
+router.post('/img', function(req, res) {
+    console.log('/img:', req);
+    res.send('收到img请求')
+});
 // router.get('/login', user.showLogin);
 // router.post('/login', user.login);
 //

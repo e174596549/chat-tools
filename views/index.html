@@ -11,6 +11,7 @@
         <script src="https://unpkg.com/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/element-ui/lib/index.js"></script>
         <style type="text/css">
+            @import url("//unpkg.com/element-ui/lib/theme-default/index.css");
             div {
                 border-radius: 5px;
                 border: 1px solidred;
@@ -40,22 +41,29 @@
                             <div class="grid-content bg-purple center">
                                 :
                             </div>
-                            <div class="grid-content bg-purple center">
-                                {{ item.message.data }}
-                            </div>
+                            <div class="grid-content bg-purple center" v-html="item.message.data"></div>
                         </el-col>
                     </el-row>
                 </transition-group>
             </div>
             <!-- <div class="show-textarea" v-bind:html="html" v-on:input="show-update"></div> -->
             <div class="bottom">
-                <el-button v-on:click="login" v-bind:disabled="isLogin">登录</el-button>
-                <el-button v-on:click="logOut" v-bind:disabled="!isLogin">登出</el-button>
-                <el-button v-on:click="clear" icon="delete">清空聊天记录</el-button>
-                <el-button v-on:click="send" icon="message" v-bind:disabled="!isLogin">发送</el-button>
-                <input class="my-textarea" v-model="input" v-on:change='send'></input>
+                <div class="my-input">
+                    <div class="my-button">
+                        <el-button v-on:click="login" v-bind:disabled="isLogin">登录</el-button>
+                        <el-button v-on:click="logOut" v-bind:disabled="!isLogin">登出</el-button>
+                        <el-button v-on:click="clear" icon="delete">清空聊天记录</el-button>
+                        <el-button v-on:click="send" icon="message" v-bind:disabled="!isLogin">发送</el-button>
+                    </div>
+                    <input class="my-textarea" v-model="input" v-on:change='send'></input>
+                </div>
+                <el-upload action="/img" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-success="handleAvatarSuccess">
+                    <i class="el-icon-plus"></i>
+                </el-upload>
+                <el-dialog v-model="dialogVisible" size="tiny">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
             </div>
-
         </div>
         <script type="text/javascript">
             var $ = new Vue({
@@ -193,6 +201,12 @@
                     logOut: function () {
                         $.socket.emit('logOut', `${$.myName}`)
                         $.socket = null
+                    },
+                    handleAvatarSuccess: function (response, file, fileList) {
+                        this.input = `<img src='${file.url}'>`
+                    },
+                    handlePictureCardPreview: function (file) {
+                        this.input = `<img src='${file.url}'>`
                     }
                 },
                 watch: {
