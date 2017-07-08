@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>聊天室</title>
+        <script src="/socket.io/socket.io.js"></script>
+    </script>
+</head>
+
+<body>
+    <button id="id-login" name="button">登录</button>
+    <button id="id-logout" name="button">登出</button>
+    <button id="id-send-message" name="button">发送消息</button>
+    <button id="id-get-online-users" name="button">当前在线</button>
+    <br>
+    <textarea id="my-textarea"></textarea>
+
+    <script type="text/javascript">
+        const logIn = document.querySelector('#id-login');
+        logIn.addEventListener('click', function () {
+            dologIn()
+        })
+
+        const dologIn = function () {
+            // 建立 socket 连接
+            const socket = io.connect()
+            socket.on('connect', function () {
+                console.log('连接成功');
+            })
+            // 监听登录验证信息
+            socket.on('whoAreYou', () => {
+                const name = prompt("输入你得名字", "")
+                // 进行登录验证
+                socket.emit('name', name)
+            })
+            // 监听消息广播
+            socket.on('message', function (msg) {
+                console.log(msg);
+            })
+            // 发送聊天消息
+            const sendBtn = document.querySelector('#id-send-message')
+            sendBtn.addEventListener('click', function () {
+                const msg = document.querySelector('#my-textarea').value
+                socket.emit('message', msg)
+            })
+            // 登出
+            const logOut = document.querySelector('#id-logout')
+            logOut.addEventListener('click', function () {
+                socket.disconnect()
+            })
+        }
+
+        const getUserList = {
+            method: 'get',
+            url: '/api/chat/online-users',
+            contentType: 'application/json',
+            callback: function (response) {
+                console.log('当前在线：', response)
+            }
+        }
+
+        const ajax = function (request) {
+            const r = new XMLHttpRequest()
+            r.open(request.method, request.url, true)
+            if (request.contentType !== undefined) {
+                r.setRequestHeader('Content-Type', request.contentType)
+            }
+            r.onreadystatechange = function (event) {
+                if (r.readyState === 4) {
+                    request.callback(r.response)
+                }
+            }
+            if (request.method === 'GET') {
+                r.send()
+            } else {
+                r.send(request.data)
+            }
+        }
+
+        const userList = document.querySelector('#id-get-online-users')
+        userList.addEventListener('click', function () {
+            ajax(getUserList)
+        })
+    </script>
+</body>
+</html>
