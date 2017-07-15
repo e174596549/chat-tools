@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const routes = require('./routes/index');
+const tc = require('./lib/text-censor');
 
 const app = express();
 app.use(express.static(path.join(__dirname, 'static')));
@@ -70,8 +71,10 @@ io.on('connection', function(socket) {
         if (data !== '') {
             console.log('message data:', data);
             var time = new Date().toLocaleString()
-            // socket.emit('message', new Date(), socket.name, data)
-            io.sockets.emit('message', time, socket.name, data)
+            // socket.emit('message', new Date(), socket.name, data
+            tc.filter(data, (err, filtered) => {
+                io.sockets.emit('message', time, socket.name, filtered)
+            })
         }
     });
     // redis 订阅 系统广播
