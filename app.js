@@ -72,9 +72,14 @@ io.on('connection', function(socket) {
             console.log('message data:', data);
             var time = new Date().toLocaleString()
             // socket.emit('message', new Date(), socket.name, data
-            tc.filter(data, (err, filtered) => {
-                io.sockets.emit('message', time, socket.name, filtered)
-            })
+            if (data.length > 50) {
+                io.sockets.emit('message', time, socket.name, data)
+            }
+            else {
+                tc.filter(data, (err, filtered) => {
+                    io.sockets.emit('message', time, socket.name, filtered)
+                })
+            }
         }
     });
     // redis 订阅 系统广播
