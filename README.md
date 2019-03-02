@@ -1,6 +1,6 @@
 # 基于 nodejs 的聊天室
 
-[聊天室地址](http://taoer.info:9000)
+[聊天室地址](http://140.143.200.171:9000/)
 
 ![](https://raw.githubusercontent.com/e174596549/chat-tools/master/chat.gif)
 
